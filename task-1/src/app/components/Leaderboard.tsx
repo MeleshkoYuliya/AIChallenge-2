@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { allLeaders, type Leader } from "../data/leaders";
 
 const categoryBadgeStyles: Record<string, { bg: string; color: string }> = {
@@ -11,6 +11,21 @@ const categoryBadgeStyles: Record<string, { bg: string; color: string }> = {
   Contribution: { bg: "#f3e8ff", color: "#6b21a8" },
   "Public Speaking": { bg: "#fef3c7", color: "#92400e" },
 };
+
+const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+function getQuarter(monthStr: string): string {
+  const idx = months.indexOf(monthStr);
+  if (idx < 3) return "Q1";
+  if (idx < 6) return "Q2";
+  if (idx < 9) return "Q3";
+  return "Q4";
+}
+
+function parseDate(dateStr: string) {
+  const parts = dateStr.split("-");
+  return { day: parts[0], month: parts[1], year: parts[2] };
+}
 
 function StarIcon({ size = 16 }: { size?: number }) {
   return (
@@ -53,14 +68,8 @@ function CommunityIcon() {
 function ChevronIcon({ up }: { up: boolean }) {
   return (
     <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
       style={{ transform: up ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}
     >
       <polyline points="6 9 12 15 18 9" />
@@ -70,14 +79,10 @@ function ChevronIcon({ up }: { up: boolean }) {
 
 function CategoryIcon({ icon }: { icon: string }) {
   switch (icon) {
-    case "education":
-      return <EducationIcon />;
-    case "presentation":
-      return <PresentationIcon />;
-    case "community":
-      return <CommunityIcon />;
-    default:
-      return <EducationIcon />;
+    case "education": return <EducationIcon />;
+    case "presentation": return <PresentationIcon />;
+    case "community": return <CommunityIcon />;
+    default: return <EducationIcon />;
   }
 }
 
@@ -93,7 +98,7 @@ function PodiumColumn({ leader, rank }: { leader: Leader; rank: number }) {
   const scoreBg = rank === 1 ? "#fef9c3" : "#fff";
   const scoreBorder = rank === 1 ? "#fde047" : "#e2e8f0";
   const scoreColor = rank === 1 ? "#ca8a04" : "#0ea5e9";
-  const blockHeight = rank === 1 ? 160 : rank === 2 ? 128 : 128;
+  const blockHeight = rank === 1 ? 160 : 128;
   const blockBg = rank === 1
     ? "linear-gradient(180deg, #fef3c7, #fde68a)"
     : "linear-gradient(180deg, #e2e8f0, #cbd5e1)";
@@ -103,12 +108,8 @@ function PodiumColumn({ leader, rank }: { leader: Leader; rank: number }) {
   return (
     <div
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        maxWidth: 280,
-        width: "100%",
-        position: "relative",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        maxWidth: 280, width: "100%", position: "relative",
         marginTop: isFirst ? -32 : 0,
         order: rank === 1 ? 2 : rank === 2 ? 1 : 3,
       }}
@@ -117,33 +118,17 @@ function PodiumColumn({ leader, rank }: { leader: Leader; rank: number }) {
         <div style={{ position: "relative", marginBottom: 12 }}>
           <div
             style={{
-              width: avatarSize,
-              height: avatarSize,
-              borderRadius: "50%",
-              border: avatarBorder,
-              backgroundImage: `url(${leader.avatar})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundColor: avatarBgColor,
-              boxShadow: "0 4px 12px rgba(0,0,0,.15)",
+              width: avatarSize, height: avatarSize, borderRadius: "50%", border: avatarBorder,
+              backgroundImage: `url(${leader.avatar})`, backgroundSize: "cover", backgroundPosition: "center",
+              backgroundColor: avatarBgColor, boxShadow: "0 4px 12px rgba(0,0,0,.15)",
             }}
           />
           <div
             style={{
-              position: "absolute",
-              bottom: -8,
-              right: -4,
-              width: badgeSize,
-              height: badgeSize,
-              borderRadius: "50%",
-              background: badgeBg,
-              border: "4px solid #fff",
-              color: "#fff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 700,
-              fontSize: isFirst ? 18 : 14,
+              position: "absolute", bottom: -8, right: -4, width: badgeSize, height: badgeSize,
+              borderRadius: "50%", background: badgeBg, border: "4px solid #fff", color: "#fff",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontWeight: 700, fontSize: isFirst ? 18 : 14,
             }}
           >
             {rank}
@@ -157,17 +142,11 @@ function PodiumColumn({ leader, rank }: { leader: Leader; rank: number }) {
         </p>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
+            display: "flex", alignItems: "center", gap: 6,
             padding: isFirst ? "8px 20px" : "6px 16px",
-            background: scoreBg,
-            border: `1px solid ${scoreBorder}`,
-            borderRadius: 20,
-            boxShadow: "0 1px 2px rgba(0,0,0,.05)",
-            color: scoreColor,
-            fontSize: isFirst ? 20 : 18,
-            fontWeight: 700,
+            background: scoreBg, border: `1px solid ${scoreBorder}`, borderRadius: 20,
+            boxShadow: "0 1px 2px rgba(0,0,0,.05)", color: scoreColor,
+            fontSize: isFirst ? 20 : 18, fontWeight: 700,
           }}
         >
           <StarIcon size={isFirst ? 18 : 16} />
@@ -176,17 +155,11 @@ function PodiumColumn({ leader, rank }: { leader: Leader; rank: number }) {
       </div>
       <div
         style={{
-          width: "100%",
-          height: blockHeight,
-          background: blockBg,
-          borderRadius: "12px 12px 0 0",
-          borderTop: blockBorderTop,
+          width: "100%", height: blockHeight, background: blockBg,
+          borderRadius: "12px 12px 0 0", borderTop: blockBorderTop,
           boxShadow: "inset 0 2px 4px rgba(0,0,0,.06)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          paddingTop: 16,
-          overflow: "hidden",
+          display: "flex", justifyContent: "center", alignItems: "flex-start",
+          paddingTop: 16, overflow: "hidden",
         }}
       >
         <span style={{ fontSize: isFirst ? 112 : 96, fontWeight: 900, color: rankNumberColor, userSelect: "none", lineHeight: 1 }}>
@@ -209,41 +182,29 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
         border: expanded ? "1px solid #0ea5e9" : "1px solid #e2e8f0",
         borderRadius: 12,
         boxShadow: expanded ? "0 4px 12px rgba(0,0,0,.1)" : "0 1px 3px rgba(0,0,0,.1)",
-        overflow: "hidden",
-        transition: "all .2s",
+        overflow: "hidden", transition: "all .2s",
       }}
     >
-      {/* Main row */}
       <div style={{ padding: "20px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16, justifyContent: "space-between" }}>
-          {/* Left: rank + avatar + info */}
           <div style={{ display: "flex", alignItems: "center", flex: 1, gap: 24 }}>
             <span style={{ color: "#94a3b8", fontSize: 24, fontWeight: 700, minWidth: 32, textAlign: "center" }}>
               {rank}
             </span>
             <div
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: "50%",
-                backgroundImage: `url(${leader.avatar})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundColor: "#fbbf24",
-                flexShrink: 0,
+                width: 56, height: 56, borderRadius: "50%",
+                backgroundImage: `url(${leader.avatar})`, backgroundSize: "cover",
+                backgroundPosition: "center", backgroundColor: "#fbbf24", flexShrink: 0,
               }}
             />
             <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>
-                {leader.name}
-              </h3>
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", margin: 0 }}>{leader.name}</h3>
               <span style={{ fontSize: 14, color: "#64748b" }}>{leader.role}</span>
             </div>
           </div>
 
-          {/* Right: category stats + total + expand */}
           <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            {/* Category stats */}
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
               {leader.categoryStats.map((stat) => (
                 <div key={stat.icon} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
@@ -255,40 +216,20 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
               ))}
             </div>
 
-            {/* Total */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-end",
-                gap: 4,
-                borderLeft: "1px solid #e2e8f0",
-                paddingLeft: 24,
-              }}
-            >
-              <span style={{ color: "#94a3b8", fontSize: 10, fontWeight: 600, letterSpacing: "0.05em" }}>
-                TOTAL
-              </span>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, borderLeft: "1px solid #e2e8f0", paddingLeft: 24 }}>
+              <span style={{ color: "#94a3b8", fontSize: 10, fontWeight: 600, letterSpacing: "0.05em" }}>TOTAL</span>
               <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#0ea5e9", fontSize: 24, fontWeight: 700 }}>
                 <StarIcon size={20} />
                 <span>{leader.score}</span>
               </div>
             </div>
 
-            {/* Expand button */}
             <button
               onClick={() => setExpanded(!expanded)}
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 8,
-                background: expanded ? "#e0f2fe" : "#f1f5f9",
-                border: "none",
-                borderRadius: "50%",
-                color: "#0ea5e9",
-                cursor: "pointer",
-                transition: "background .2s",
+                display: "flex", alignItems: "center", justifyContent: "center", padding: 8,
+                background: expanded ? "#e0f2fe" : "#f1f5f9", border: "none", borderRadius: "50%",
+                color: "#0ea5e9", cursor: "pointer", transition: "background .2s",
               }}
             >
               <ChevronIcon up={expanded} />
@@ -297,37 +238,29 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
         </div>
       </div>
 
-      {/* Expanded details */}
       {expanded && (
         <div style={{ background: "#f8fafc", borderTop: "1px solid #e2e8f0", padding: 24 }}>
-          <h4
-            style={{
-              color: "#64748b",
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              margin: "0 0 16px",
-            }}
-          >
+          <h4 style={{ color: "#64748b", fontSize: 12, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", margin: "0 0 16px" }}>
             Recent Activity
           </h4>
           <div style={{ overflowX: "auto" }}>
             <table style={{ borderCollapse: "collapse", width: "100%" }}>
               <thead>
                 <tr>
-                  <th style={{ textAlign: "left", padding: "8px 16px 8px 0", fontSize: 12, fontWeight: 600, color: "#64748b", letterSpacing: "0.05em", textTransform: "uppercase", borderBottom: "1px solid #e2e8f0" }}>
-                    Activity
-                  </th>
-                  <th style={{ textAlign: "left", padding: "8px 16px", fontSize: 12, fontWeight: 600, color: "#64748b", letterSpacing: "0.05em", textTransform: "uppercase", borderBottom: "1px solid #e2e8f0" }}>
-                    Category
-                  </th>
-                  <th style={{ textAlign: "left", padding: "8px 16px", fontSize: 12, fontWeight: 600, color: "#64748b", letterSpacing: "0.05em", textTransform: "uppercase", borderBottom: "1px solid #e2e8f0" }}>
-                    Date
-                  </th>
-                  <th style={{ textAlign: "right", padding: "8px 0 8px 16px", fontSize: 12, fontWeight: 600, color: "#64748b", letterSpacing: "0.05em", textTransform: "uppercase", borderBottom: "1px solid #e2e8f0" }}>
-                    Points
-                  </th>
+                  {["Activity", "Category", "Date", "Points"].map((col, i) => (
+                    <th
+                      key={col}
+                      style={{
+                        textAlign: i === 3 ? "right" : "left",
+                        padding: i === 0 ? "8px 16px 8px 0" : i === 3 ? "8px 0 8px 16px" : "8px 16px",
+                        fontSize: 12, fontWeight: 600, color: "#64748b",
+                        letterSpacing: "0.05em", textTransform: "uppercase",
+                        borderBottom: "1px solid #e2e8f0",
+                      }}
+                    >
+                      {col}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -339,19 +272,7 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
                         {activity.name}
                       </td>
                       <td style={{ padding: "14px 16px", borderBottom: "1px solid #f1f5f9" }}>
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            padding: "4px 12px",
-                            borderRadius: 12,
-                            fontSize: 12,
-                            fontWeight: 600,
-                            background: badge.bg,
-                            color: badge.color,
-                            whiteSpace: "nowrap",
-                          }}
-                        >
+                        <span style={{ display: "inline-flex", alignItems: "center", padding: "4px 12px", borderRadius: 12, fontSize: 12, fontWeight: 600, background: badge.bg, color: badge.color, whiteSpace: "nowrap" }}>
                           {activity.category}
                         </span>
                       </td>
@@ -375,78 +296,110 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
 
 // ─── Main Component ──────────────────────────────────────
 
+const selectStyle = {
+  padding: "8px 32px 8px 12px",
+  fontSize: 14,
+  border: "1px solid #e2e8f0",
+  borderRadius: 8,
+  background: "#fff",
+  color: "#0f172a",
+  appearance: "none" as const,
+  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+  backgroundPosition: "right 10px center",
+  backgroundRepeat: "no-repeat",
+  cursor: "pointer",
+};
+
 export default function Leaderboard() {
   const [search, setSearch] = useState("");
+  const [year, setYear] = useState("All Years");
+  const [quarter, setQuarter] = useState("All Quarters");
+  const [category, setCategory] = useState("All Categories");
 
-  const top3 = allLeaders.slice(0, 3);
-  const rest = allLeaders.slice(3);
+  const filteredLeaders = useMemo(() => {
+    const searchLower = search.toLowerCase();
+
+    return allLeaders.filter((leader) => {
+      // Search filter: match name or role
+      if (searchLower && !leader.name.toLowerCase().includes(searchLower) && !leader.role.toLowerCase().includes(searchLower)) {
+        return false;
+      }
+
+      // For year/quarter/category filters, check if the leader has at least one matching activity
+      const hasMatchingActivity = leader.activities.some((act) => {
+        const { month, year: actYear } = parseDate(act.date);
+
+        if (year !== "All Years" && actYear !== year) return false;
+        if (quarter !== "All Quarters" && getQuarter(month) !== quarter) return false;
+        if (category !== "All Categories" && act.category !== category) return false;
+
+        return true;
+      });
+
+      // If no time/category filters are active, include all search-matched leaders
+      if (year === "All Years" && quarter === "All Quarters" && category === "All Categories") {
+        return true;
+      }
+
+      return hasMatchingActivity;
+    });
+  }, [search, year, quarter, category]);
+
+  const top3 = filteredLeaders.slice(0, 3);
+  const rest = filteredLeaders.slice(3);
+  const showPodium = top3.length === 3;
 
   return (
     <section
       style={{
         fontFamily: "Segoe UI, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif",
-        color: "#0f172a",
-        background: "#fff",
-        borderRadius: 12,
-        padding: "32px 24px",
-        marginBottom: 32,
+        color: "#0f172a", background: "#fff", borderRadius: 12, padding: "32px 24px", marginBottom: 32,
       }}
     >
       {/* Header */}
       <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", maxWidth: 1200, margin: "0 auto 32px" }}>
         <div style={{ flex: 1 }}>
-          <h2 style={{ fontSize: 30, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>
-            Leaderboard
-          </h2>
-          <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
-            Top performers based on contributions and activity
-          </p>
+          <h2 style={{ fontSize: 30, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>Leaderboard</h2>
+          <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>Top performers based on contributions and activity</p>
         </div>
       </header>
 
       {/* Filter Bar */}
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 12,
-          justifyContent: "space-between",
-          maxWidth: 1200,
-          margin: "0 auto 24px",
-          padding: "20px 24px",
-          background: "#fff",
-          border: "1px solid #e2e8f0",
-          borderRadius: 12,
-          boxShadow: "0 1px 3px rgba(0,0,0,.1)",
+          display: "flex", alignItems: "center", flexWrap: "wrap", gap: 12,
+          justifyContent: "space-between", maxWidth: 1200, margin: "0 auto 24px",
+          padding: "20px 24px", background: "#fff", border: "1px solid #e2e8f0",
+          borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,.1)",
         }}
       >
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-          {["All Years", "All Quarters", "All Categories"].map((label) => (
-            <select
-              key={label}
-              defaultValue={label}
-              style={{
-                padding: "8px 32px 8px 12px",
-                fontSize: 14,
-                border: "1px solid #e2e8f0",
-                borderRadius: 8,
-                background: "#fff",
-                color: "#0f172a",
-                appearance: "none",
-                backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-                backgroundPosition: "right 10px center",
-                backgroundRepeat: "no-repeat",
-                cursor: "pointer",
-              }}
-            >
-              <option>{label}</option>
-              {label === "All Years" && <><option>2025</option><option>2024</option><option>2023</option></>}
-              {label === "All Quarters" && <><option>Q1</option><option>Q2</option><option>Q3</option><option>Q4</option></>}
-              {label === "All Categories" && <><option>Engineering</option><option>Design</option><option>Management</option></>}
-            </select>
-          ))}
+          <select value={year} onChange={(e) => setYear(e.target.value)} style={selectStyle}>
+            <option>All Years</option>
+            <option>2025</option>
+            <option>2024</option>
+            <option>2023</option>
+          </select>
+
+          <select value={quarter} onChange={(e) => setQuarter(e.target.value)} style={selectStyle}>
+            <option>All Quarters</option>
+            <option>Q1</option>
+            <option>Q2</option>
+            <option>Q3</option>
+            <option>Q4</option>
+          </select>
+
+          <select value={category} onChange={(e) => setCategory(e.target.value)} style={selectStyle}>
+            <option>All Categories</option>
+            <option>Education</option>
+            <option>Training</option>
+            <option>Community</option>
+            <option>Contribution</option>
+            <option>Public Speaking</option>
+            <option>University Partnership</option>
+          </select>
         </div>
+
         <div style={{ flex: 1, minWidth: 250, position: "relative" }}>
           <svg
             style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}
@@ -461,31 +414,32 @@ export default function Leaderboard() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
-              width: "100%",
-              padding: "8px 12px 8px 34px",
-              fontSize: 14,
-              border: "1px solid #e2e8f0",
-              borderRadius: 8,
-              background: "#fff",
-              color: "#0f172a",
-              outline: "none",
-              boxSizing: "border-box",
+              width: "100%", padding: "8px 12px 8px 34px", fontSize: 14,
+              border: "1px solid #e2e8f0", borderRadius: 8, background: "#fff",
+              color: "#0f172a", outline: "none", boxSizing: "border-box",
             }}
           />
         </div>
       </div>
 
       {/* Podium */}
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 24, maxWidth: 900, margin: "0 auto 64px", padding: "32px 8px" }}>
-        <PodiumColumn leader={top3[1]} rank={2} />
-        <PodiumColumn leader={top3[0]} rank={1} />
-        <PodiumColumn leader={top3[2]} rank={3} />
-      </div>
+      {showPodium && (
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 24, maxWidth: 900, margin: "0 auto 64px", padding: "32px 8px" }}>
+          <PodiumColumn leader={top3[1]} rank={2} />
+          <PodiumColumn leader={top3[0]} rank={1} />
+          <PodiumColumn leader={top3[2]} rank={3} />
+        </div>
+      )}
 
       {/* Leader List */}
       <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 1200, margin: "0 auto" }}>
-        {rest.map((leader, idx) => (
-          <LeaderRow key={leader.name} leader={leader} rank={idx + 4} />
+        {filteredLeaders.length === 0 && (
+          <div style={{ textAlign: "center", padding: "48px 0", color: "#94a3b8", fontSize: 16 }}>
+            No leaders found matching your filters.
+          </div>
+        )}
+        {(showPodium ? rest : filteredLeaders).map((leader, idx) => (
+          <LeaderRow key={leader.name} leader={leader} rank={(showPodium ? idx + 4 : idx + 1)} />
         ))}
       </div>
     </section>

@@ -129,12 +129,13 @@ function generateActivities(rand: () => number, count: number): Activity[] {
     const cat = categories[Math.floor(rand() * categories.length)];
     const day = Math.floor(rand() * 28) + 1;
     const month = Math.floor(rand() * 12);
+    const year = 2023 + Math.floor(rand() * 3); // 2023, 2024, or 2025
     const points = (Math.floor(rand() * 12) + 1) * 8;
 
     acts.push({
       name: `${prefix} ${type} ${subject}`,
       category: cat.name,
-      date: `${day.toString().padStart(2, "0")}-${months[month]}-2025`,
+      date: `${day.toString().padStart(2, "0")}-${months[month]}-${year}`,
       points,
     });
   }
