@@ -71,19 +71,28 @@ export default function Footer() {
           vention
         </span>
         <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-          {["LinkedIn", "Instagram", "Twitter", "Youtube", "Facebook"].map((name) => (
+          {[
+            { name: "LinkedIn", url: "https://www.linkedin.com/company/vaborovskyy/" },
+            { name: "Instagram", url: "https://www.instagram.com/ventionteams/" },
+            { name: "Twitter", url: "https://twitter.com/ventionteams" },
+            { name: "Youtube", url: "https://www.youtube.com/@ventionteams" },
+            { name: "Facebook", url: "https://www.facebook.com/ventionteams" },
+          ].map((link) => (
             <a
-              key={name}
-              href="#"
+              key={link.name}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 color: "#ccc",
                 fontSize: 14,
                 textDecoration: "none",
+                cursor: "pointer",
               }}
               onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#ccc")}
             >
-              {name}
+              {link.name}
             </a>
           ))}
         </div>
