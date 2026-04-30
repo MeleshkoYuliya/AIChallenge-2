@@ -78,7 +78,31 @@ export default function Navigation() {
 
   return (
     <nav className="bg-[#e0e0e0]">
-      <div className="flex items-center gap-0 px-4">
+      {/* Mobile nav bar */}
+      <div className="show-mobile items-center gap-3 px-4 py-2 border-b border-[#ccc]">
+        <button className="text-[#333] p-1 cursor-pointer" style={{ background: "none", border: "none" }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <div className="flex items-center gap-2 flex-1">
+          <div style={{ width: 32, height: 32, background: "#333", borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 14, fontWeight: 600 }}>
+            E
+          </div>
+          <span style={{ fontSize: 18, fontWeight: 700, color: "#1a1a1a" }}>EDU</span>
+        </div>
+        <button className="text-[#333] p-1 cursor-pointer" style={{ background: "none", border: "none" }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="5" cy="12" r="2" />
+            <circle cx="12" cy="12" r="2" />
+            <circle cx="19" cy="12" r="2" />
+          </svg>
+        </button>
+      </div>
+      {/* Desktop nav */}
+      <div className="hide-mobile flex items-center gap-0 px-4">
         {navItems.map((item) => (
           <div key={item.label} className="relative">
             {item.hasDropdown ? (

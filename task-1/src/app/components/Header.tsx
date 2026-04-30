@@ -37,8 +37,8 @@ export default function Header() {
           <span className="text-white text-base font-semibold">SharePoint</span>
         </div>
 
-        {/* Search bar */}
-        <div className="flex-1 flex justify-center mx-4">
+        {/* Search bar - desktop */}
+        <div className="flex-1 flex justify-center mx-4 hide-mobile">
           <div className="relative w-full max-w-md">
             <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -58,12 +58,27 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Right side: Settings + Help + Avatar */}
+        {/* Right side */}
         <div className="flex items-center gap-3">
+          {/* Mobile search icon */}
+          <button className="text-white p-1 rounded cursor-pointer show-mobile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
+          {/* Mobile three dots */}
+          <button className="text-white p-1 rounded cursor-pointer show-mobile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="5" cy="12" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="19" cy="12" r="2" />
+            </svg>
+          </button>
           {/* Settings */}
           <button
             onClick={() => toggleDrawer("settings")}
-            className={`p-1.5 rounded cursor-pointer ${activeDrawer === "settings" ? "bg-[#d0d0d0] text-[#333]" : "text-white hover:bg-[#444]"}`}
+            className={`p-1.5 rounded cursor-pointer hide-mobile ${activeDrawer === "settings" ? "bg-[#d0d0d0] text-[#333]" : "text-white hover:bg-[#444]"}`}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="3" />
@@ -73,7 +88,7 @@ export default function Header() {
           {/* Help */}
           <button
             onClick={() => toggleDrawer("help")}
-            className={`p-1.5 rounded cursor-pointer ${activeDrawer === "help" ? "bg-[#d0d0d0] text-[#333]" : "text-white hover:bg-[#444]"}`}
+            className={`p-1.5 rounded cursor-pointer hide-mobile ${activeDrawer === "help" ? "bg-[#d0d0d0] text-[#333]" : "text-white hover:bg-[#444]"}`}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />

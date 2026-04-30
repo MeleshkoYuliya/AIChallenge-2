@@ -185,9 +185,9 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
         overflow: "hidden", transition: "all .2s",
       }}
     >
-      <div style={{ padding: "20px 24px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16, justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", flex: 1, gap: 24 }}>
+      <div className="leader-row-padding" style={{ padding: "20px 24px" }}>
+        <div className="leader-row-main" style={{ display: "flex", alignItems: "center", gap: 16, justifyContent: "space-between" }}>
+          <div className="leader-row-left" style={{ display: "flex", alignItems: "center", flex: 1, gap: 24 }}>
             <span style={{ color: "#94a3b8", fontSize: 24, fontWeight: 700, minWidth: 32, textAlign: "center" }}>
               {rank}
             </span>
@@ -204,7 +204,7 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <div className="leader-row-right" style={{ display: "flex", alignItems: "center", gap: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
               {leader.categoryStats.map((stat) => (
                 <div key={stat.icon} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
@@ -216,7 +216,7 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
               ))}
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, borderLeft: "1px solid #e2e8f0", paddingLeft: 24 }}>
+            <div className="leader-total" style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, borderLeft: "1px solid #e2e8f0", paddingLeft: 24 }}>
               <span style={{ color: "#94a3b8", fontSize: 10, fontWeight: 600, letterSpacing: "0.05em" }}>TOTAL</span>
               <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#0ea5e9", fontSize: 24, fontWeight: 700 }}>
                 <StarIcon size={20} />
@@ -411,13 +411,14 @@ export default function Leaderboard() {
 
   return (
     <section
+      className="leaderboard-section"
       style={{
         fontFamily: "Segoe UI, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif",
         color: "#0f172a", background: "#fff", borderRadius: 12, padding: "32px 24px", marginBottom: 32,
       }}
     >
       {/* Header */}
-      <header style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", maxWidth: 1200, margin: "0 auto 32px" }}>
+      <header className="leaderboard-header" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", maxWidth: 1200, margin: "0 auto 32px" }}>
         <div style={{ flex: 1 }}>
           <h2 style={{ fontSize: 30, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>Leaderboard</h2>
           <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>Top performers based on contributions and activity</p>
@@ -426,6 +427,7 @@ export default function Leaderboard() {
 
       {/* Filter Bar */}
       <div
+        className="filter-bar"
         style={{
           display: "flex", alignItems: "center", flexWrap: "wrap", gap: 12,
           justifyContent: "space-between", maxWidth: 1200, margin: "0 auto 24px",
@@ -434,7 +436,7 @@ export default function Leaderboard() {
           boxShadow: "0 1px 3px rgba(0,0,0,.08)",
         }}
       >
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+        <div className="filters-row" style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           <Dropdown
             value={year}
             options={["All Years", "2025", "2024", "2023"]}
@@ -452,7 +454,7 @@ export default function Leaderboard() {
           />
         </div>
 
-        <div style={{ flex: 1, minWidth: 250, position: "relative" }}>
+        <div className="search-col" style={{ flex: 1, minWidth: 250, position: "relative" }}>
           <svg
             style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}
             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -476,15 +478,15 @@ export default function Leaderboard() {
 
       {/* Podium */}
       {showPodium && (
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 24, maxWidth: 900, margin: "0 auto 64px", padding: "32px 8px" }}>
+        <div className="podium-section" style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 24, maxWidth: 900, margin: "0 auto 64px", padding: "32px 8px" }}>
           <PodiumColumn leader={top3[1]} rank={2} />
           <PodiumColumn leader={top3[0]} rank={1} />
           <PodiumColumn leader={top3[2]} rank={3} />
         </div>
       )}
 
-      {/* Leader List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 1200, margin: "0 auto" }}>
+      {/* Leader List - desktop: skip top 3 if podium shown */}
+      <div className="leader-list hide-mobile" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 1200, margin: "0 auto" }}>
         {filteredLeaders.length === 0 && (
           <div style={{ textAlign: "center", padding: "48px 0", color: "#94a3b8", fontSize: 16 }}>
             No leaders found matching your filters.
@@ -492,6 +494,17 @@ export default function Leaderboard() {
         )}
         {(showPodium ? rest : filteredLeaders).map((leader, idx) => (
           <LeaderRow key={leader.name} leader={leader} rank={(showPodium ? idx + 4 : idx + 1)} />
+        ))}
+      </div>
+      {/* Leader List - mobile: show all */}
+      <div className="leader-list show-mobile" style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 1200, margin: "0 auto" }}>
+        {filteredLeaders.length === 0 && (
+          <div style={{ textAlign: "center", padding: "48px 0", color: "#94a3b8", fontSize: 16 }}>
+            No leaders found matching your filters.
+          </div>
+        )}
+        {filteredLeaders.map((leader, idx) => (
+          <LeaderRow key={leader.name} leader={leader} rank={idx + 1} />
         ))}
       </div>
     </section>

@@ -17,7 +17,7 @@ export default function Footer() {
           }}
         >
         <div style={{ borderTop: "1px solid #d0d0d0", paddingTop: 20, paddingBottom: 32 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+          <div className="footer-bar" style={{ display: "flex", alignItems: "center", gap: 32 }}>
             {/* Likes */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#555", fontSize: 14 }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -58,6 +58,7 @@ export default function Footer() {
 
       {/* Footer */}
       <footer
+        className="footer-bottom"
         style={{
           background: "#333",
           padding: "16px 32px",
@@ -70,7 +71,7 @@ export default function Footer() {
         <span style={{ color: "#fff", fontSize: 16, fontWeight: 600, letterSpacing: "0.02em" }}>
           vention
         </span>
-        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+        <div className="footer-links" style={{ display: "flex", alignItems: "center", gap: 32 }}>
           {[
             { name: "LinkedIn", url: "https://www.linkedin.com/company/vaborovskyy/" },
             { name: "Instagram", url: "https://www.instagram.com/ventionteams/" },
