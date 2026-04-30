@@ -1,5 +1,6 @@
 import Breadcrumbs from "./components/Breadcrumbs";
 import Leaderboard from "./components/Leaderboard";
+import Comments from "./components/Comments";
 
 const breadcrumbItems = [
   { label: "Home", href: "/" },
@@ -16,6 +17,7 @@ export default function Home() {
           Company Leader Board 2025
         </h1>
         <Leaderboard />
+        <Comments />
       </div>
     </main>
   );

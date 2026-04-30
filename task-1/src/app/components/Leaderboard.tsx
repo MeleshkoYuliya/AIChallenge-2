@@ -294,21 +294,81 @@ function LeaderRow({ leader, rank }: { leader: Leader; rank: number }) {
   );
 }
 
-// ─── Main Component ──────────────────────────────────────
+// ─── Dropdown ────────────────────────────────────────────
 
-const selectStyle = {
-  padding: "8px 32px 8px 12px",
-  fontSize: 14,
-  border: "1px solid #e2e8f0",
-  borderRadius: 8,
-  background: "#fff",
-  color: "#0f172a",
-  appearance: "none" as const,
-  backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
-  backgroundPosition: "right 10px center",
-  backgroundRepeat: "no-repeat",
-  cursor: "pointer",
-};
+function Dropdown({
+  value,
+  options,
+  onChange,
+}: {
+  value: string;
+  options: string[];
+  onChange: (val: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "8px 12px", fontSize: 14, fontWeight: 600,
+          color: "#0f172a", background: "transparent",
+          border: "1px solid #ccc", borderRadius: 4,
+          cursor: "pointer", whiteSpace: "nowrap",
+          minWidth: 100,
+        }}
+      >
+        <span style={{ flex: 1, textAlign: "left", overflow: "hidden", textOverflow: "ellipsis" }}>{value}</span>
+        <svg
+          width="12" height="12" viewBox="0 0 24 24" fill="none"
+          stroke="#64748b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          style={{ flexShrink: 0 }}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+      {open && (
+        <>
+          <div
+            style={{ position: "fixed", inset: 0, zIndex: 99 }}
+            onClick={() => setOpen(false)}
+          />
+          <div
+            style={{
+              position: "absolute", top: "calc(100% + 4px)", left: 0,
+              background: "#fff", borderRadius: 8,
+              boxShadow: "0 4px 16px rgba(0,0,0,.15)",
+              border: "1px solid #e2e8f0",
+              zIndex: 100, minWidth: "100%",
+              padding: "6px 0",
+            }}
+          >
+            {options.map((opt) => (
+              <div
+                key={opt}
+                onClick={() => { onChange(opt); setOpen(false); }}
+                style={{
+                  padding: "10px 20px", fontSize: 14,
+                  color: "#0f172a", cursor: "pointer",
+                  background: opt === value ? "#f1f5f9" : "transparent",
+                  whiteSpace: "nowrap",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "#f1f5f9"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = opt === value ? "#f1f5f9" : "transparent"; }}
+              >
+                {opt}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Component ──────────────────────────────────────
 
 export default function Leaderboard() {
   const [search, setSearch] = useState("");
@@ -369,40 +429,32 @@ export default function Leaderboard() {
         style={{
           display: "flex", alignItems: "center", flexWrap: "wrap", gap: 12,
           justifyContent: "space-between", maxWidth: 1200, margin: "0 auto 24px",
-          padding: "20px 24px", background: "#fff", border: "1px solid #e2e8f0",
-          borderRadius: 12, boxShadow: "0 1px 3px rgba(0,0,0,.1)",
+          padding: "16px 20px", background: "#fff",
+          borderRadius: 12, border: "1px solid #e2e8f0",
+          boxShadow: "0 1px 3px rgba(0,0,0,.08)",
         }}
       >
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-          <select value={year} onChange={(e) => setYear(e.target.value)} style={selectStyle}>
-            <option>All Years</option>
-            <option>2025</option>
-            <option>2024</option>
-            <option>2023</option>
-          </select>
-
-          <select value={quarter} onChange={(e) => setQuarter(e.target.value)} style={selectStyle}>
-            <option>All Quarters</option>
-            <option>Q1</option>
-            <option>Q2</option>
-            <option>Q3</option>
-            <option>Q4</option>
-          </select>
-
-          <select value={category} onChange={(e) => setCategory(e.target.value)} style={selectStyle}>
-            <option>All Categories</option>
-            <option>Education</option>
-            <option>Training</option>
-            <option>Community</option>
-            <option>Contribution</option>
-            <option>Public Speaking</option>
-            <option>University Partnership</option>
-          </select>
+          <Dropdown
+            value={year}
+            options={["All Years", "2025", "2024", "2023"]}
+            onChange={setYear}
+          />
+          <Dropdown
+            value={quarter}
+            options={["All Quarters", "Q1", "Q2", "Q3", "Q4"]}
+            onChange={setQuarter}
+          />
+          <Dropdown
+            value={category}
+            options={["All Categories", "Education", "Training", "Community", "Contribution", "Public Speaking", "University Partnership"]}
+            onChange={setCategory}
+          />
         </div>
 
         <div style={{ flex: 1, minWidth: 250, position: "relative" }}>
           <svg
-            style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}
+            style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}
             width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
           >
             <circle cx="11" cy="11" r="8" />
@@ -414,8 +466,8 @@ export default function Leaderboard() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
-              width: "100%", padding: "8px 12px 8px 34px", fontSize: 14,
-              border: "1px solid #e2e8f0", borderRadius: 8, background: "#fff",
+              width: "100%", padding: "8px 12px 8px 36px", fontSize: 14,
+              border: "1px solid #ccc", borderRadius: 4, background: "transparent",
               color: "#0f172a", outline: "none", boxSizing: "border-box",
             }}
           />
