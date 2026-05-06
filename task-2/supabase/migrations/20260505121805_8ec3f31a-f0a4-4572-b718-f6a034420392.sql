@@ -1,0 +1,1 @@
+alter table public.events add column contact_email text;
